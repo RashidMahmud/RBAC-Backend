@@ -5,10 +5,12 @@ import config from "./config";
 
 const app: Application = express();
 
-app.use(cors({
+app.use(
+  cors({
     origin: config.app_url,
     credentials: true,
-}));
+  }),
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
