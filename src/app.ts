@@ -2,9 +2,7 @@ import cookieParser from "cookie-parser";
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import config from "./config";
-import httpStatus from "http-status";
-import { prisma } from "./lib/prisma";
-import bcrypt from "bcryptjs";
+import { userRoutes } from "./modules/user/user.route";
 
 const app: Application = express();
 
@@ -22,6 +20,7 @@ app.use(cookieParser());
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello, World!");
 });
-app.post();
+
+app.use("/api/user", userRoutes);
 
 export default app;
