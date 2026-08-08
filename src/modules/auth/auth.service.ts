@@ -16,33 +16,25 @@ const loginUser = async (payload: ILoginUser) => {
     throw new Error("Password is incorrect");
   }
 
-  const accessToken = jwt.sign(
-    {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    },
-    "accesssecret",
-    {
-      expiresIn: "1d",
-    },
-  );
+  const jwtPayload = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+  };
 
-  const refreshToken = jwt.sign(
-    {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    },
-    "refreshsecret",
-    {
-      expiresIn: "7d",
-    },
-  );
+  const accessToken = jwt.sign(jwtPayload, "accesssecret", {
+    expiresIn: "1d",
+  });
 
-  return user;
+  const refreshToken = jwt.sign(jwtPayload, "refreshsecret", {
+    expiresIn: "7d",
+  });
+
+  return {
+    accessToken,
+    refreshToken,
+  };
 };
 
 export const authService = {
