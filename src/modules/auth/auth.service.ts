@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import { prisma } from "../../lib/prisma";
 import { ILoginUser } from "./auth.interface";
 
@@ -14,6 +15,19 @@ const loginUser = async (payload: ILoginUser) => {
   if (!isPasswordMatched) {
     throw new Error("Password is incorrect");
   }
+
+  const accessToken = jwt.sign(
+    {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    },
+    "accesssecret",
+    {
+      expiresIn: "1d",
+    },
+  );
 
   return user;
 };
