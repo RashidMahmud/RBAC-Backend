@@ -26,6 +26,7 @@ const registerUser = catchAsync(
 const getMyProfile = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { accessToken } = req.cookies;
+    console.log(accessToken);
 
     const verifiedToken = jwtUtils.verifyToken(
       accessToken,
@@ -42,7 +43,7 @@ const getMyProfile = catchAsync(
       success: true,
       statusCode: httpStatus.OK,
       message: "User profile fetched successfully",
-      data: { profile }
+      data: { profile },
     });
   },
 );
