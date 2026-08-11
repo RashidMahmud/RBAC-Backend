@@ -21,12 +21,11 @@ router.get(
     );
 
     const {email, name, id, role } =verifiedToken;
-    
-    const requiredRoles = [Role.ADMIN, Role.USER, Role.AUTHOR]
 
     if (typeof verifiedToken === "string") {
       throw new Error(verifiedToken);
     }
+    const requiredRoles = [Role.ADMIN, Role.USER, Role.AUTHOR]
     next();
   },
   userController.getMyProfile,
