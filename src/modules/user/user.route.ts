@@ -4,6 +4,20 @@ import { Request, Response } from "express";
 import { jwtUtils } from "../../utils/jwt";
 import config from "../../config";
 import { Role } from "../../../generated/prisma/enums";
+import httpStatus from "http-status";
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        email: string;
+        name: string;
+        id: string;
+        role: Role;
+      };
+    }
+  }
+}
 
 const router = Router();
 
@@ -20,12 +34,30 @@ router.get(
       config.jwt_access_secret,
     );
 
-    const {email, name, id, role } =verifiedToken;
-
     if (typeof verifiedToken === "string") {
       throw new Error(verifiedToken);
     }
-    const requiredRoles = [Role.ADMIN, Role.USER, Role.AUTHOR]
+
+    const { email, name, id, role } = verifiedToken;
+
+    const requiredRoles = [Role.ADMIN, Role.USER, Role.AUTHOR];
+
+    if (!requiredRoles.includes(role)) {
+      return res.status(403).json({
+        success: false,
+        statusCode: httpStatus.FORBIDDEN,
+        message:
+          "Forbidden. You don't have permission to access this resource.",
+      });
+    }
+
+    req.user = {
+      email,
+      name,
+      id,
+      role,
+    };
+
     next();
   },
   userController.getMyProfile,
