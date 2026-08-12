@@ -5,6 +5,7 @@ import config from "../../config";
 import { Role } from "../../../generated/prisma/enums";
 import httpStatus from "http-status";
 import { catchAsync } from "../../utils/catchAsync";
+import { JwtPayload } from "jsonwebtoken";
 
 declare global {
   namespace Express {
@@ -28,6 +29,13 @@ const auth = () => {
       req.cookies.accessToken || req.headers.authorization?.startsWith("Bearer")
         ? req.headers.authorization?.split(" ")[1]
         : req.headers.authorization;
+
+    if (!token) {
+      throw new Error(
+        "You are not logged in. Please log in to access this resource.",
+      );
+    }
+    const verifiedToken = jwtUtils.verifyToken(token, config.jwt_access_secret);
   });
 };
 router.get(
@@ -42,11 +50,11 @@ router.get(
       config.jwt_access_secret,
     );
 
-    if (typeof verifiedToken === "string") {
-      throw new Error(verifiedToken);
+    if (!verifiedToken.success) {
+      throw new Error(verifiedToken.error);
     }
 
-    const { email, name, id, role } = verifiedToken;
+    const { email, name, id, role } = verifiedToken.data as JwtPayload;
 
     const requiredRoles = [Role.ADMIN, Role.USER, Role.AUTHOR];
 
