@@ -1,10 +1,10 @@
-import { NextFunction, Router } from "express";
+import { NextFunction, Router, Request, Response } from "express";
 import { userController } from "./user.controller";
-import { Request, Response } from "express";
 import { jwtUtils } from "../../utils/jwt";
 import config from "../../config";
 import { Role } from "../../../generated/prisma/enums";
 import httpStatus from "http-status";
+import { catchAsync } from "../../utils/catchAsync";
 
 declare global {
   namespace Express {
@@ -22,6 +22,14 @@ declare global {
 const router = Router();
 
 router.post("/register", userController.registerUser);
+const auth = () => {
+  return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const token =
+      req.cookies.accessToken || req.headers.authorization?.startsWith("Bearer")
+        ? req.headers.authorization?.split(" ")[1]
+        : req.headers.authorization;
+  });
+};
 router.get(
   "/me",
   (req: Request, res: Response, next: NextFunction) => {
