@@ -15,14 +15,14 @@ const loginUser = catchAsync(
       httpOnly: true,
       secure: false,
       sameSite: "none",
-      maxAge: 1000 * 60 * 60 * 24 // 1d
+      maxAge: 1000 * 60 * 60 * 24, // 1d
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: false,
       sameSite: "none",
-      maxAge: 1000 * 60 * 60 * 24 * 7 // 7d
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7d
     });
 
     sendResponse(res, {
@@ -34,6 +34,13 @@ const loginUser = catchAsync(
   },
 );
 
+const refreshToken = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const refreshToken = req.cookies.refreshToken;
+  },
+);
+
 export const authController = {
   loginUser,
+  refreshToken,
 };
