@@ -46,11 +46,11 @@ const loginUser = async (payload: ILoginUser) => {
   };
 };
 
-const refreshToken = async () => {
-
-}
+const refreshToken = async (refreshToken: string) => {
+  const verifiedRefreshToken = jwtUtils.verifyToken(refreshToken, config.jwt_refresh_secret)
+};
 
 export const authService = {
   loginUser,
-  refreshToken
+  refreshToken,
 };
