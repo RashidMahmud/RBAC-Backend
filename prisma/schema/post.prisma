@@ -1,0 +1,7 @@
+model Post {
+    id String @id @default(uuid())
+    tittle String @db.VarChar(255)
+    content String @db.Text
+    thumbnail String?
+    isFeatured Boolean @default(false)
+}
