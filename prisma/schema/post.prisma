@@ -4,4 +4,11 @@ model Post {
     content String @db.Text
     thumbnail String?
     isFeatured Boolean @default(false)
+    status PostStatus @default(PUBLISHED)
+    tags String[]
+    views Int @default(0)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@map("posts")
 }
